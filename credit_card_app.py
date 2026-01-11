@@ -26,19 +26,26 @@ if uploaded:
         'CASH_ADVANCE','CASH_ADVANCE_TRX','PURCHASES_TRX',
         'PAYMENTS','MINIMUM_PAYMENTS'
     ]
-
+# Apply log transform safely
     for col in log_columns:
         if col in X.columns:
-            X[col] = np.log1p(X[col])
+            X[col] = pd.to_numeric(X[col], errors="coerce")
+            X[col] = np.log1p(X[col].fillna(0))
 
+# Ensure all required model features exist
     for col in delivery_features:
         if col not in X.columns:
             X[col] = 0
 
+# Keep only model features in correct order
     X = X[delivery_features]
 
-    X_scaled = delivery_scaler.transform(X)
+# Replace any remaining NaNs
+    X = X.fillna(0)
 
+# Scale
+    X_scaled = delivery_scaler.transform(X)
+    
     cluster_preds = cluster_model.predict(X_scaled)
     delivery_preds = delivery_model.predict(X_scaled)
 
@@ -48,3 +55,4 @@ if uploaded:
 
     st.success("Prediction Completed Successfully")
     st.dataframe(result)
+
