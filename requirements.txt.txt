@@ -1,0 +1,12 @@
+pandas
+ipykernel
+numpy
+matplotlib
+seaborn
+scikit-learn
+jupyter
+plotly
+streamlit
+joblib
+
+#python -m pip install -r requirements.txt
